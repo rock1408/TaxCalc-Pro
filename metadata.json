@@ -1,0 +1,6 @@
+{
+  "name": "TaxCalc Pro",
+  "description": "Comprehensive and secure dual-country (India & USA) income and crypto tax calculator platform featuring side-by-side regime comparisons, detailed portfolios, and intelligent optimizer insights.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
