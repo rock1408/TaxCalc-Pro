@@ -178,6 +178,9 @@ export interface UsaDeductions {
   charityAssets: number;
   casualtyLosses: number;
   otherItemized: number;
+  // Senior citizen status fields (OBBBA & Standard Additional Deduction)
+  isSenior65Plus?: boolean;
+  spouseSenior65Plus?: boolean;
 }
 
 export interface UsaCredits {

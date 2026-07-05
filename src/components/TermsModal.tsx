@@ -86,13 +86,13 @@ export default function TermsModal({ isOpen, onClose }: TermsModalProps) {
               {/* Introduction */}
               <div className="bg-slate-50 dark:bg-slate-950/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/80 space-y-2">
                 <h3 className="font-bold text-slate-850 dark:text-slate-100 uppercase tracking-wide text-[11px]">
-                  Welcome to TaxCalc Pro
+                  Terms of Use
                 </h3>
-                <p>
-                  BY ACCESSING, BROWSING, OR USING THE TAXCALC PRO WEBSITE ("THE WEBSITE") AND ITS ASSOCIATED SERVICES, YOU AGREE TO BE BOUND BY THESE TERMS AND CONDITIONS ("TERMS"). IF YOU DO NOT AGREE TO THESE TERMS, PLEASE DO NOT USE THE WEBSITE.
+                <p className="font-semibold text-slate-500 dark:text-slate-400">
+                  Last updated: July 2026
                 </p>
                 <p>
-                  These Terms constitute a legally binding agreement between you and TaxCalc Pro governing your use of the Website. By using the Website, you represent that you are at least 18 years of age and have the legal capacity to enter into this agreement. If you are using the Website on behalf of an organization, you represent that you have the authority to bind such organization to these Terms.
+                  Please read these Terms of Use ("Terms") carefully before using <strong>taxcalcpro.vercel.app</strong> (the "Site"). By accessing or using the Site, you agree to be bound by these Terms. If you do not agree, please do not use the Site.
                 </p>
               </div>
 
@@ -100,44 +100,40 @@ export default function TermsModal({ isOpen, onClose }: TermsModalProps) {
               <div className="space-y-2">
                 <h3 className="font-bold text-slate-850 dark:text-slate-100 uppercase tracking-widest text-[10px] flex items-center gap-1">
                   <Scale size={13} className="text-blue-500" />
-                  Terms Reference Highlights
+                  Key Terms & Highlights Reference
                 </h3>
                 <div className="border border-slate-150 dark:border-slate-850 rounded-lg overflow-hidden">
                   <table className="w-full text-[11px] border-collapse text-left">
                     <thead>
                       <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-150 dark:border-slate-800">
-                        <th className="py-2 px-3 font-extrabold text-slate-700 dark:text-slate-300">Category</th>
-                        <th className="py-2 px-3 font-extrabold text-slate-700 dark:text-slate-300">Key Terms & Commitments</th>
+                        <th className="py-2 px-3 font-extrabold text-slate-700 dark:text-slate-300">Section</th>
+                        <th className="py-2 px-3 font-extrabold text-slate-700 dark:text-slate-300">Quick Summary & Commitments</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-600 dark:text-slate-400 font-medium">
                       <tr>
-                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">Nature of Service</td>
-                        <td className="py-2 px-3">Informational tax calculator and liability estimation only</td>
+                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">1. Purpose</td>
+                        <td className="py-2 px-3">Free online calculators for estimating India and US taxes for informational purposes only.</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">Not Professional Advice</td>
-                        <td className="py-2 px-3">Always consult specialized CPAs or tax lawyers for actual legal submissions</td>
+                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">2. Professional Advice</td>
+                        <td className="py-2 px-3">We do not provide legal, tax, or financial advice. Consult a CA (India) or CPA (USA).</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">Data Processing</td>
-                        <td className="py-2 px-3">100% Client-side sandbox local browser storage (No remote server saving)</td>
+                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">3. Accuracy</td>
+                        <td className="py-2 px-3">No guarantee of 100% precision. Tax laws change and updates on the Site may lag.</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">Liability Cap</td>
-                        <td className="py-2 px-3">Absolute cumulative liability capped strictly at ₹1,000 (India) or $100 (USA)</td>
+                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">4. Liability</td>
+                        <td className="py-2 px-3">No liability for direct or indirect losses. Site provided on an "as is" and "as available" basis.</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">Your Responsibility</td>
-                        <td className="py-2 px-3">Review data settings, preserve records & perform independent evaluations</td>
+                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">5. User Roles</td>
+                        <td className="py-2 px-3">Independently verify figures. No scraping, disrupting, or reverse-engineering.</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">Governing Law</td>
-                        <td className="py-2 px-3">Applicable standard laws of India or the United States, based on calculator used</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">Disputes</td>
-                        <td className="py-2 px-3">Resolved strictly through friendly negotiation and individual arbitration first</td>
+                        <td className="py-2 px-3 font-bold text-slate-850 dark:text-slate-200">10. Governing Law</td>
+                        <td className="py-2 px-3">Governed by and construed in accordance with applicable local laws.</td>
                       </tr>
                     </tbody>
                   </table>
@@ -148,138 +144,115 @@ export default function TermsModal({ isOpen, onClose }: TermsModalProps) {
               <div className="space-y-5">
                 {/* 1 */}
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">1. Acceptance of Terms</h4>
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">1. Purpose of This Site</h4>
                   <p>
-                    By interacting with our system interface, you acknowledge that you have voluntarily read, fully comprehend, and definitively agree to remain completely bound by this legal service pact. Terms remain identical whether exploring as an individual resident or navigating parameters on behalf of an enterprise entity.
+                    TaxCalc Pro provides free online calculators for estimating income tax, paycheck withholding, and related figures for India and the United States ("Tools"). The Tools are intended for <strong>general informational and educational purposes only</strong>.
                   </p>
                 </div>
 
                 {/* 2 */}
-                <div className="space-y-2">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">2. Description of Service</h4>
-                  <p>TaxCalc Pro maintains an integrated suite of online responsive mathematical models allowing users to explore hypothetical scenarios:</p>
-                  
-                  <div className="pl-3.5 border-l-2 border-slate-200 dark:border-slate-800 space-y-2">
-                    <p><strong>2.1 Income Tax Calculators:</strong> Includes comparison engines modeling current year Indian tax laws (comparing step progressive Old Regime vs simplified bracket New Regime) and US Federal bracket limits mapped according to filing category statuses.</p>
-                    <p><strong>2.2 Cryptocurrency Tax Calculators:</strong> Analyzes coin base trades under varying reporting standards. Under Section 115BBH for Indian accounts, VDAs gains are modeled with flat 30% without loss offset allowances. USA transactions model short/long-term asset periods with custom valuation.</p>
-                    <p><strong>2.3 Comparison Tools:</strong> Displays interactive Old vs New Regime schedules, detailed multi-state tax charts for US configurations, and real-time ledger outputs.</p>
-                    <p><strong>2.4 Tax Insights Hub:</strong> Automated rule-based heuristics mapping entered variables into relevant deduction notices and filing guidelines.</p>
-                  </div>
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">2. Not Professional Tax, Legal, or Financial Advice</h4>
+                  <p className="font-bold text-slate-700 dark:text-slate-200">The Site does not provide tax, legal, accounting, or financial advice.</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>All results produced by the Tools are <strong>estimates only</strong>, based on simplified assumptions and publicly available tax rates, slabs, and rules in effect at the time of calculation.</li>
+                    <li>Results may not reflect your exact tax liability, withholding, or take-home pay, and may not account for every deduction, exemption, credit, local tax, or individual circumstance applicable to you.</li>
+                    <li>You should not rely solely on the Tools to make financial, tax filing, or investment decisions.</li>
+                    <li>Always consult a qualified Chartered Accountant (India), Certified Public Accountant / licensed tax professional (USA), or relevant government authority before making decisions based on any information from this Site.</li>
+                  </ul>
                 </div>
 
                 {/* 3 */}
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">3. No Professional Advice</h4>
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">3. No Guarantee of Accuracy</h4>
                   <p>
-                    <strong>IMPORTANT: TaxCalc Pro is an informational planning template only.</strong> The metrics shown do not represent actual audit reports, certified filings, or absolute declarations. Legislative provisions are subject to sudden shifts, and individual state variances, local surcharges, or custom deductions play dynamic roles. You are strictly expected to align and verify your final calculations with a certified CPA, recognized legal practitioner, or qualified financial planner before making irreversible payments or submissions to official governmental departments.
+                    While we make reasonable efforts to keep tax rates, slabs, and calculations up to date (e.g., aligned with the applicable Union Budget in India or IRS inflation adjustments in the USA), we do not guarantee that:
+                  </p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>The information is accurate, complete, or current at all times</li>
+                    <li>The Tools are free from errors, bugs, or interruptions</li>
+                    <li>The Tools reflect the most recent legislative or regulatory changes</li>
+                  </ul>
+                  <p>
+                    Tax laws and rates change periodically, and there may be a delay between an official change and its reflection on this Site.
                   </p>
                 </div>
 
                 {/* 4 */}
-                <div className="space-y-2">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">4. Disclaimer of Warranties</h4>
-                  <p>We declare service delivery purely on an "AS IS" and "AS AVAILABLE" infrastructure basis, completely disclaiming any implied representational warranties:</p>
-                  <div className="pl-3.5 border-l-2 border-slate-200 dark:border-slate-800 space-y-1.5">
-                    <p><strong>4.1 Accuracy:</strong> We cannot warrant 100% calculation accuracy due to potential rounding variances, edge-case exemptions, or localized tax rules.</p>
-                    <p><strong>4.2 Completeness:</strong> Complex scenarios involving global asset transfers, detailed corporate payroll credits, or regional local municipality duties may not be fully contained.</p>
-                    <p><strong>4.3 Currency:</strong> While calculations track updated 2024–2025 frameworks, updates may lag slightly behind unexpected emergency legislative mandates.</p>
-                  </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">4. Limitation of Liability</h4>
+                  <p>
+                    To the fullest extent permitted by applicable law, TaxCalc Pro, its owner(s), and any affiliated contributors shall not be liable for any direct, indirect, incidental, consequential, or special damages arising out of or in connection with:
+                  </p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Your use of, or inability to use, the Site or Tools</li>
+                    <li>Any errors, omissions, or inaccuracies in the calculations or content</li>
+                    <li>Any decisions made or actions taken based on information from the Site</li>
+                    <li>Any penalties, interest, or losses arising from incorrect tax filings, underpayment, or overpayment based on estimates provided by the Tools</li>
+                  </ul>
+                  <p>
+                    The Site is provided on an <strong>"as is" and "as available"</strong> basis, without warranties of any kind, either express or implied.
+                  </p>
                 </div>
 
                 {/* 5 */}
-                <div className="space-y-2">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">5. Limitation of Liability</h4>
-                  <p>In no event shall our engineers, contributors, or corporate affiliates be held liable for:</p>
-                  <div className="pl-3.5 border-l-2 border-slate-200 dark:border-slate-800 space-y-1.5">
-                    <p><strong>5.1 Indirect Damages:</strong> Any secondary, special, consequential, or punitive damages including business disruption, missed capital investment returns, or financial stress.</p>
-                    <p><strong>5.2 Calculation Errors:</strong> Losses incurred through misplaced confidence in calculator outputs or incorrect user data entries.</p>
-                    <p><strong>5.3 Third-Party Actions:</strong> Unpredictable API deviations, public coin valuation shifts, or unexpected modifications in administrative tax rules.</p>
-                    <p><strong>5.4 Liability Cap:</strong> Total cumulative financial liability arising from any connection with our services is strictly limited to an absolute cap of ₹1,000 (INR) in India, or $100 (USD) in the US.</p>
-                  </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">5. User Responsibilities</h4>
+                  <p>By using the Site, you agree that:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>You are responsible for independently verifying any figures before relying on them for filing, planning, or financial decisions</li>
+                    <li>You will not use the Tools for any unlawful purpose</li>
+                    <li>You will not attempt to disrupt, reverse-engineer, scrape at scale, or interfere with the normal operation of the Site</li>
+                    <li>Any data you enter into the calculators is entered voluntarily and, per our Privacy Policy, is processed locally in your browser</li>
+                  </ul>
                 </div>
 
                 {/* 6 */}
-                <div className="space-y-2">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">6. User Responsibilities</h4>
-                  <p>As an active user of the platform, you specifically commit to the following:</p>
-                  <div className="pl-3.5 border-l-2 border-slate-200 dark:border-slate-800 space-y-1.5">
-                    <p><strong>6.1 Accurate Information:</strong> Providing truthful data variables, checking currency decimals, and reviewing input totals before logging computations.</p>
-                    <p><strong>6.2 Data Security:</strong> Safeguarding local state caches, utilizing locked browser instances when browsing from shared terminals, and clearing cache upon exit.</p>
-                    <p><strong>6.3 Compliance:</strong> Maintaining operations block-aligned with statutory filing obligations and never utilizing the calculations for deceptive tax schemes.</p>
-                    <p><strong>6.4 Independent Verification:</strong> Directly confirming calculations against IRS publications, CBDT schedules, and the manual guidelines provided by legislative tax agencies.</p>
-                  </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">6. Intellectual Property</h4>
+                  <p>
+                    All content, design, branding, and code on this Site (excluding publicly available tax rate data, which is sourced from government publications) are the property of TaxCalc Pro unless otherwise noted. You may not copy, reproduce, or redistribute the Site's design or code without permission. You are welcome to share links to the Site and its calculators.
+                  </p>
                 </div>
 
                 {/* 7 */}
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">7. Intellectual Property Rights</h4>
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">7. Third-Party Links and Sources</h4>
                   <p>
-                    The TaxCalc Pro name, branding, styles, visual configurations, vector graphics layouts, custom CSS, scripts, and underlying calculation algorithms represent proprietary intellectual property. License is granted solely for non-profit personal sandbox evaluations. Reverse engineering formula matrices or harvesting layouts for competing portals is strictly prohibited.
+                    The Site may reference or link to official sources (e.g., incometax.gov.in, irs.gov) for informational purposes. We are not responsible for the content, accuracy, or availability of external sites.
                   </p>
                 </div>
 
                 {/* 8 */}
-                <div className="space-y-2">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">8. Data Handling and Privacy</h4>
-                  <p>We respect client anonymity and maintain a transparent, highly locked data architecture:</p>
-                  <div className="pl-3.5 border-l-2 border-slate-200 dark:border-slate-800 space-y-1.5">
-                    <p><strong>8.1 Local Processing:</strong> Calculations run entirely on your local browser thread. Your sensitive data rows never traverse our remote machines.</p>
-                    <p><strong>8.2 Data Storage:</strong> Inputs persist strictly within your local browser's storage bounds to allow rapid page refreshes, and are dropped on manual cache resets.</p>
-                    <p><strong>8.3 Cookies:</strong> Minimal cookie headers are reserved solely for retaining core system choices such as selected country code or light/dark viewport state.</p>
-                    <p><strong>8.4 Third-Party Services:</strong> External links lead users to official gov websites. Data handling is bound by those respective organizations.</p>
-                    <p><strong>8.5 Data Retention:</strong> We store zero user transaction logs. You bear sole ownership of manually backing up your calculated tax worksheets.</p>
-                  </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">8. No Warranty of Fitness for a Particular Purpose</h4>
+                  <p>
+                    The Tools are general-purpose calculators and are not customized for complex tax situations (e.g., multiple business entities, cross-border income, alternative minimum tax scenarios, complex trusts, etc.). Users with complex financial situations should seek personalized professional advice.
+                  </p>
                 </div>
 
                 {/* 9 */}
-                <div className="space-y-2">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">9. Tax Law Accuracy</h4>
-                  <p>Our mathematical processors map structural policies from high-credibility legislative resources:</p>
-                  <div className="pl-3.5 border-l-2 border-slate-200 dark:border-slate-800 space-y-1.5">
-                    <p><strong>9.1 India Tax Information:</strong> Implements provisions of the Income Tax Act, 1961, mapping Section 115BAC New Regime and standard Old Regime deductions.</p>
-                    <p><strong>9.2 USA Tax Information:</strong> Maps standard deductions and tax tables authorized under IRC provisions adjust for fiscal year brackets.</p>
-                    <p><strong>9.3 Cryptocurrency Taxation:</strong> Integrates flat-rate Indian capital gains models alongside short/long-term holding period logic aligned with IRS crypto rules.</p>
-                  </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">9. Changes to the Site and Terms</h4>
+                  <p>
+                    We reserve the right to modify, suspend, or discontinue any part of the Site or Tools at any time without notice. We may also update these Terms periodically; continued use of the Site after changes constitutes acceptance of the revised Terms.
+                  </p>
                 </div>
 
                 {/* 10 */}
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">10. Acceptable Use</h4>
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">10. Governing Law</h4>
                   <p>
-                    Use of the Website is limited to personal, planning, educational, and evaluation purposes. You may not utilize automation scrapers, load massive concurrent operations, deploy harmful scripts, or mock endpoints.
+                    These Terms shall be governed by and construed in accordance with applicable local laws, without regard to conflict-of-law principles.
                   </p>
                 </div>
 
                 {/* 11 */}
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">11. Third-Party Links</h4>
+                  <h4 className="font-bold text-slate-850 dark:text-slate-200 text-xs">11. Contact Us</h4>
                   <p>
-                    Any link pointing towards external tools or official tax agencies is provided purely for convenient research, without representing our endorsement of their content accuracy.
+                    If you have questions about these Terms, please contact us at: <strong className="text-blue-600 dark:text-blue-400">legal-india@taxcalcpro.com</strong>
                   </p>
-                </div>
-
-                {/* 12-23 Details Shortened for elegant visual presentation */}
-                <div className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px]">
-                  <p><strong>12. Updates:</strong> Terms may adapt to reflect changing financial regulations. We reflect current revisions on the bottom footer section.</p>
-                  <p><strong>13. Accounts:</strong> TaxCalc Pro provides unrestricted sandbox access without demanding account creation or sign-ups.</p>
-                  <p><strong>14 & 15. Law & Disputes:</strong> Mapped to the laws of India and the United States respectively. Disputes must seek quick, friendly conciliation before pursuing binding arbitration procedures in parent jurisdictions.</p>
-                  <p><strong>16 & 17. Indemnification & Severability:</strong> You agree to protect and indemnify TaxCalc Pro from claims due to misuse. If any term clause is deemed null, remaining components continue unimpaired.</p>
-                  <p><strong>18 & 19. Entire Agreement:</strong> Represents the complete and singular pact between the user and the platform regarding informational simulations.</p>
-                  <p><strong>22 & 23. Accessibility & Cohorts:</strong> Built to remain compliant with accessible screen standards, restricted from tracking details of visitors under the age of 13.</p>
-                </div>
-              </div>
-
-              {/* Contact Information */}
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4 text-[11px] bg-slate-50/50 dark:bg-slate-900/40 p-4 rounded-xl">
-                <div>
-                  <h5 className="font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1">India Contact</h5>
-                  <p>Email: legal-india@taxcalcpro.com</p>
-                  <p>Address: Level 4, Tech Hub, Bangalore, India</p>
-                </div>
-                <div>
-                  <h5 className="font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1">USA Contact</h5>
-                  <p>Email: legal-usa@taxcalcpro.com</p>
-                  <p>Address: Suite 102, Tax Tower, San Francisco, CA</p>
                 </div>
               </div>
             </div>

@@ -284,7 +284,7 @@ export default function InsightsSection({
               return (
                 <div key={`faq_${idx}`} className="border border-gray-100 dark:border-slate-800 rounded-xl overflow-hidden hover:border-gray-200 transition-colors">
                   <button
-                    className="w-full flex items-center justify-between p-4 text-left font-bold text-xs text-gray-800 dark:text-gray-200 bg-gray-50/50 dark:bg-slate-800/10 outline-none hover:bg-gray-50"
+                    className="w-full flex items-center justify-between p-4 text-left font-bold text-xs text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-700/80 outline-none transition-colors duration-200"
                     onClick={() => setExpandedFaq(isExpanded ? null : idx)}
                   >
                     <span>{faq.q}</span>
