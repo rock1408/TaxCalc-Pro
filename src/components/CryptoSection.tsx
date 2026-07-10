@@ -116,20 +116,139 @@ export default function CryptoSection({
       return;
     }
 
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += 'ID,Date,Type,Token,Amount,UnitPrice,Fee,Exchange,Memo\n';
+    const fiatCurrency = country === 'INDIA' ? 'INR' : 'USD';
+
+    // Format dates as YYYY-MM-DD HH:mm:ss UTC for universal tax software compatibility
+    const formatCsvDate = (isoString: string): string => {
+      try {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return isoString;
+        const year = d.getUTCFullYear();
+        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        const hours = String(d.getUTCHours()).padStart(2, '0');
+        const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(d.getUTCSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
+      } catch (e) {
+        return isoString;
+      }
+    };
+
+    const csvRows: string[][] = [];
     
+    // Add standard accounting headers compatible with Koinly, CoinTracker, TurboTax, etc.
+    csvRows.push([
+      'Date',
+      'Type',
+      'Sent Amount',
+      'Sent Currency',
+      'Received Amount',
+      'Received Currency',
+      'Fee Amount',
+      'Fee Currency',
+      'Unit Price',
+      'Exchange',
+      'Label',
+      'Description',
+      'TxHash'
+    ]);
+
     transactions.forEach(t => {
-      csvContent += `"${t.id}","${t.timestamp}","${t.type}","${t.currency}","${t.quantity}","${t.unitPrice}","${t.fee}","${t.platform}","${t.details || ''}"\n`;
+      const formattedDate = formatCsvDate(t.timestamp);
+      let sentQty = '';
+      let sentCur = '';
+      let receivedQty = '';
+      let receivedCur = '';
+      const feeAmt = t.fee > 0 ? String(t.fee) : '';
+      const feeCur = t.fee > 0 ? fiatCurrency : '';
+      let label = '';
+
+      switch (t.type) {
+        case 'BUY':
+        case 'NFT_BUY':
+          sentQty = String(t.quantity * t.unitPrice);
+          sentCur = fiatCurrency;
+          receivedQty = String(t.quantity);
+          receivedCur = t.currency;
+          label = t.type === 'NFT_BUY' ? 'nft purchase' : 'buy';
+          break;
+        case 'SELL':
+        case 'NFT_SELL':
+          sentQty = String(t.quantity);
+          sentCur = t.currency;
+          receivedQty = String(t.quantity * t.unitPrice);
+          receivedCur = fiatCurrency;
+          label = t.type === 'NFT_SELL' ? 'nft sale' : 'sell';
+          break;
+        case 'MINING':
+          receivedQty = String(t.quantity);
+          receivedCur = t.currency;
+          label = 'mining';
+          break;
+        case 'STAKING':
+          receivedQty = String(t.quantity);
+          receivedCur = t.currency;
+          label = 'staking';
+          break;
+        case 'AIRDROP':
+          receivedQty = String(t.quantity);
+          receivedCur = t.currency;
+          label = 'airdrop';
+          break;
+        case 'GIFT_IN':
+          receivedQty = String(t.quantity);
+          receivedCur = t.currency;
+          label = 'gift';
+          break;
+        case 'GIFT_OUT':
+          sentQty = String(t.quantity);
+          sentCur = t.currency;
+          label = 'gift';
+          break;
+        default:
+          receivedQty = String(t.quantity);
+          receivedCur = t.currency;
+          break;
+      }
+
+      csvRows.push([
+        formattedDate,
+        t.type,
+        sentQty,
+        sentCur,
+        receivedQty,
+        receivedCur,
+        feeAmt,
+        feeCur,
+        String(t.unitPrice),
+        t.platform,
+        label,
+        t.details || '',
+        t.id
+      ]);
     });
 
-    const encodedUri = encodeURI(csvContent);
+    const csvString = csvRows
+      .map(row => row.map(cell => {
+        const str = String(cell);
+        if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      }).join(','))
+      .join('\n');
+
+    // Safe download using blob and Object URL to handle large datasets perfectly without limit issues
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `TaxCalcPro_CryptoLedger_${country}.csv`);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `TaxCalcPro_CryptoLedger_${country}_Accounting.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   // JSON backup exporter
@@ -738,7 +857,10 @@ export default function CryptoSection({
 
           {/* Backup Panel */}
           <div className="p-4 rounded-2xl border transition-colors bg-gray-50 border-gray-200 dark:bg-slate-900/60 dark:border-slate-800 space-y-3">
-            <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Ledger Utilities</h4>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-1">
+              <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Ledger Utilities</h4>
+              <span className="text-[10px] text-gray-400 font-medium">CSV follows standard tax software accounting formats (CoinTracker, Koinly, etc.)</span>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2" id="util_btn_grid">
               <button
                 id="btn_export_csv"
@@ -746,7 +868,7 @@ export default function CryptoSection({
                 className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all"
               >
                 <FileSpreadsheet size={13} />
-                <span>Export CSV</span>
+                <span>Export Tax CSV</span>
               </button>
               <button
                 id="btn_export_backup"
