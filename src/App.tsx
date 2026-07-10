@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Country, TabId, IndiaIncomeInputs, IndiaDeductions, UsaIncomeInputs, UsaAdjustments, UsaDeductions, UsaCredits, CryptoTransaction, CostBasisMethod } from './types';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -20,10 +21,34 @@ import {
   defaultUsaCredits,
   defaultCryptoTransactions,
 } from './utils/sampleData';
-import { ShieldCheck, Info, RefreshCw } from 'lucide-react';
+import { FileText, Wallet, BarChart3, Award } from 'lucide-react';
+
+// New Routing Pages
+import Home from './pages/Home';
+import HraCalculator from './pages/HraCalculator';
+import TdsCalculator from './pages/TdsCalculator';
+import GstCalculator from './pages/GstCalculator';
+import UsaPaycheckCalculator from './pages/UsaPaycheckCalculator';
+import GuidesHub from './pages/GuidesHub';
+import GuideArticle from './pages/GuideArticle';
+import About from './pages/About';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
+import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
+
+// New Components
+import Breadcrumbs from './components/Breadcrumbs';
+import DisclaimerBanner from './components/DisclaimerBanner';
+import ErrorBoundary from './components/ErrorBoundary';
+import JsonLd from './components/JsonLd';
+
 import { motion, AnimatePresence } from 'motion/react';
 
-export default function App() {
+// Wrapper to handle automatic state synchronization with route location
+function AppContent() {
+  const location = useLocation();
+
   // Global States
   const [country, setCountry] = useState<Country>(() => {
     const saved = localStorage.getItem('taxcalc_country');
@@ -37,6 +62,17 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState<TabId>('income');
+
+  // Sync country state based on current route path prefix
+  useEffect(() => {
+    if (location.pathname.startsWith('/india')) {
+      setCountry('INDIA');
+    } else if (location.pathname.startsWith('/usa')) {
+      setCountry('USA');
+    }
+    // Automatically scroll to top on route change
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   // --- MODEL INPUT STATES ---
   const [indiaIncome, setIndiaIncome] = useState<IndiaIncomeInputs>(() => {
@@ -77,7 +113,6 @@ export default function App() {
   const [transactions, setTransactions] = useState<CryptoTransaction[]>(() => {
     const saved = localStorage.getItem('taxcalc_crypto_txs');
     if (saved) return JSON.parse(saved);
-    // Initialise based on current country context
     return defaultCryptoTransactions(country === 'INDIA');
   });
 
@@ -139,7 +174,6 @@ export default function App() {
     localStorage.setItem('taxcalc_cost_basis_method', costBasisMethod);
   }, [costBasisMethod]);
 
-  // Adjust cost basis or initial defaults on country swap
   const handleCountryChange = (c: Country) => {
     setCountry(c);
   };
@@ -161,29 +195,49 @@ export default function App() {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  return (
-    <div className="min-h-screen flex flex-col font-sans transition-colors duration-300 bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100" id="main_app_wrapper">
-      
-      {/* Header element */}
-      <Header
-        country={country}
-        setCountry={handleCountryChange}
-        theme={theme}
-        toggleTheme={toggleTheme}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onResetData={handleResetAllData}
-      />
+  // Helper to render the interactive calculator pages
+  const renderCalculatorDashboard = () => {
+    return (
+      <div className="space-y-6">
+        {/* Tab Selection */}
+        <div className="border-b border-gray-150 dark:border-slate-850 flex items-center justify-between pb-1 gap-4 overflow-x-auto">
+          <div className="flex items-center space-x-1 shrink-0">
+            {[
+              { id: 'income', label: 'Income Slabs', icon: FileText },
+              { id: 'crypto', label: 'Crypto Assets', icon: Wallet },
+              { id: 'compare', label: 'Compare Regimes', icon: BarChart3 },
+              { id: 'insights', label: 'AI Advisory', icon: Award },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as TabId)}
+                  className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all border ${
+                    isActive
+                      ? 'border-blue-500 bg-blue-500/5 text-blue-600 dark:text-blue-400'
+                      : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-slate-100/50 dark:hover:bg-slate-800/20'
+                  }`}
+                >
+                  <Icon size={14} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider hidden sm:block shrink-0">
+            Active Country: {country}
+          </div>
+        </div>
 
-      {/* Main viewport Container */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8" id="viewport_main_wrapper">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${country}_${activeTab}`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
             {activeTab === 'income' && (
               <IncomeSection
@@ -243,10 +297,77 @@ export default function App() {
             )}
           </motion.div>
         </AnimatePresence>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-300 bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100" id="main_app_wrapper">
+      
+      {/* 1. Global Persistent Disclaimer Banner */}
+      <DisclaimerBanner />
+
+      {/* 2. Global Sticky Header */}
+      <Header
+        country={country}
+        setCountry={handleCountryChange}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onResetData={handleResetAllData}
+      />
+
+      {/* 3. Main Viewport Area */}
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 space-y-4" id="viewport_main_wrapper">
+        
+        {/* Dynamic breadcrumbs display */}
+        <Breadcrumbs />
+
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={
+              <>
+                <JsonLd
+                  type="WebApplication"
+                  data={{
+                    name: 'TaxCalc Pro',
+                    url: 'https://taxcalcpro.vercel.app/',
+                    description: 'Dual-country salary and capital gains tax planning simulator for India and the USA.',
+                    applicationCategory: 'FinanceApplication',
+                    operatingSystem: 'All',
+                  }}
+                />
+                <Home />
+              </>
+            } />
+            <Route path="/india" element={renderCalculatorDashboard()} />
+            <Route path="/usa" element={renderCalculatorDashboard()} />
+            <Route path="/india/hra-calculator" element={<HraCalculator />} />
+            <Route path="/india/tds-calculator" element={<TdsCalculator />} />
+            <Route path="/india/gst-calculator" element={<GstCalculator />} />
+            <Route path="/usa/paycheck-calculator" element={<UsaPaycheckCalculator />} />
+            <Route path="/guides" element={<GuidesHub />} />
+            <Route path="/guides/:slug" element={<GuideArticle />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-use" element={<TermsOfUse />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
       </main>
 
-      {/* Footer Element */}
+      {/* 4. Global Footer */}
       <Footer country={country} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }

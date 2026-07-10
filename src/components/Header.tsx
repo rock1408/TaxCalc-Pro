@@ -1,11 +1,7 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
+import React, { useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Country, TabId } from '../types';
-import { Sun, Moon, DollarSign, Wallet, ShieldAlert, Award, FileText, BarChart3, HelpCircle, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { Sun, Moon, DollarSign, Wallet, ShieldAlert, Award, FileText, BarChart3, HelpCircle, Menu, X, BookOpen, Compass, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface HeaderProps {
@@ -28,20 +24,27 @@ export default function Header({
   onResetData,
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const tabs = [
-    { id: 'income', label: 'Income Tax', icon: FileText },
-    { id: 'crypto', label: 'Crypto Tax', icon: Wallet },
-    { id: 'compare', label: 'Comparison Tools', icon: BarChart3 },
-    { id: 'insights', label: 'Tax Insights Hub', icon: Award },
-  ] as const;
+  const handleHomeNavigate = () => {
+    navigate('/');
+  };
+
+  const handleCountryToggle = (c: Country) => {
+    setCountry(c);
+    if (c === 'INDIA') {
+      navigate('/india');
+    } else {
+      navigate('/usa');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b backdrop-blur-md transition-colors duration-300 bg-white/95 border-gray-200 text-gray-900 dark:bg-slate-900/95 dark:border-slate-800 dark:text-slate-100" id="app_header">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setActiveTab('income')} id="logo_container">
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={handleHomeNavigate} id="logo_container">
             <span className="p-2 rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20 flex items-center justify-center">
               <DollarSign size={20} className="stroke-[2.5]" />
             </span>
@@ -55,34 +58,77 @@ export default function Header({
             </div>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center space-x-1" id="desktop_nav">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  id={`nav_tab_${tab.id}`}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`relative flex items-center space-x-2 px-4 py-2 rounded-xl font-sans text-sm font-semibold transition-all duration-200 outline-none ${
-                    isActive
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-600 hover:text-gray-900 dark:text-slate-300 dark:hover:text-slate-100 hover:bg-gray-100/50 dark:hover:bg-slate-800/50'
-                  }`}
-                >
-                  <Icon size={16} />
-                  <span>{tab.label}</span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTabIndicator"
-                      className="absolute bottom-0 left-4 right-4 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-full"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              );
-            })}
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-3 py-2 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                  isActive
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-100'
+                }`
+              }
+            >
+              <Compass size={14} />
+              <span>Dashboard</span>
+            </NavLink>
+
+            <NavLink
+              to={country === 'INDIA' ? '/india' : '/usa'}
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-3 py-2 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                  isActive
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-100'
+                }`
+              }
+            >
+              <FileText size={14} />
+              <span>Calculators</span>
+            </NavLink>
+
+            <NavLink
+              to="/guides"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-3 py-2 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                  isActive
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-100'
+                }`
+              }
+            >
+              <BookOpen size={14} />
+              <span>Guides</span>
+            </NavLink>
+
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-3 py-2 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                  isActive
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-100'
+                }`
+              }
+            >
+              <Award size={14} />
+              <span>About</span>
+            </NavLink>
+
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-3 py-2 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                  isActive
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-100'
+                }`
+              }
+            >
+              <Mail size={14} />
+              <span>Contact</span>
+            </NavLink>
           </nav>
 
           {/* Controls Box (Country, Theme, Reset, Mobile Menu) */}
@@ -91,7 +137,7 @@ export default function Header({
             <div className="relative flex items-center p-1 rounded-xl border bg-gray-50/50 border-gray-200 dark:bg-slate-800/40 dark:border-slate-800" id="country_selector">
               <button
                 id="btn_country_india"
-                onClick={() => setCountry('INDIA')}
+                onClick={() => handleCountryToggle('INDIA')}
                 className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
                   country === 'INDIA'
                     ? 'bg-white text-gray-900 shadow-sm dark:bg-slate-700 dark:text-white'
@@ -103,7 +149,7 @@ export default function Header({
               </button>
               <button
                 id="btn_country_usa"
-                onClick={() => setCountry('USA')}
+                onClick={() => handleCountryToggle('USA')}
                 className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
                   country === 'USA'
                     ? 'bg-white text-gray-900 shadow-sm dark:bg-slate-700 dark:text-white'
@@ -160,30 +206,53 @@ export default function Header({
             className="md:hidden border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-2 pb-4 space-y-1"
             id="mobile_drawer"
           >
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  id={`mobile_tab_${tab.id}`}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`flex items-center space-x-3 w-full px-4 py-3 rounded-xl font-sans text-sm font-semibold transition-all ${
-                    isActive
-                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800'
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
+            <NavLink
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-3 w-full px-4 py-3 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-slate-350 dark:hover:bg-slate-800"
+            >
+              <Compass size={16} />
+              <span>Dashboard</span>
+            </NavLink>
+
+            <NavLink
+              to={country === 'INDIA' ? '/india' : '/usa'}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-3 w-full px-4 py-3 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-slate-350 dark:hover:bg-slate-800"
+            >
+              <FileText size={16} />
+              <span>Calculators</span>
+            </NavLink>
+
+            <NavLink
+              to="/guides"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-3 w-full px-4 py-3 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-slate-350 dark:hover:bg-slate-800"
+            >
+              <BookOpen size={16} />
+              <span>Guides</span>
+            </NavLink>
+
+            <NavLink
+              to="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-3 w-full px-4 py-3 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-slate-350 dark:hover:bg-slate-800"
+            >
+              <Award size={16} />
+              <span>About</span>
+            </NavLink>
+
+            <NavLink
+              to="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-3 w-full px-4 py-3 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-slate-350 dark:hover:bg-slate-800"
+            >
+              <Mail size={16} />
+              <span>Contact</span>
+            </NavLink>
+
             <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center px-4">
-              <span className="text-[10px] text-gray-400">Security: Client-side Calculations Only</span>
+              <span className="text-[10px] text-gray-400">Security: Client-side only</span>
               <button
                 id="mobile_reset_btn"
                 onClick={() => {
@@ -192,7 +261,7 @@ export default function Header({
                     setMobileMenuOpen(false);
                   }
                 }}
-                className="text-xs font-bold text-rose-500 hover:text-rose-600 font-sans"
+                className="text-xs font-bold text-rose-500 hover:text-rose-600 font-sans uppercase tracking-wider"
               >
                 Wipe Local Store
               </button>

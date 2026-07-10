@@ -1,10 +1,6 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { useState } from 'react';
-import { ShieldCheck, ExternalLink, HelpCircle, FileLock2, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ShieldCheck, ExternalLink, FileLock2, Info } from 'lucide-react';
 import { Country } from '../types';
 import TermsModal from './TermsModal';
 
@@ -82,17 +78,6 @@ export default function Footer({ country }: FooterProps) {
                       <ExternalLink size={12} />
                     </a>
                   </li>
-                  <li>
-                    <a
-                      href="https://www.tin-nsdl.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-1 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    >
-                      <span>TIN NSDL Services</span>
-                      <ExternalLink size={12} />
-                    </a>
-                  </li>
                 </>
               ) : (
                 <>
@@ -118,17 +103,6 @@ export default function Footer({ country }: FooterProps) {
                       <ExternalLink size={12} />
                     </a>
                   </li>
-                  <li>
-                    <a
-                      href="https://www.irs.gov/advocate/local-taxpayer-advocate"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-1 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    >
-                      <span>Taxpayer Advocate Services</span>
-                      <ExternalLink size={12} />
-                    </a>
-                  </li>
                 </>
               )}
             </ul>
@@ -141,20 +115,29 @@ export default function Footer({ country }: FooterProps) {
             </h2>
             <ul className="space-y-2.5 text-xs">
               <li>
-                <span className="block text-[11px] text-gray-400 dark:text-slate-500 uppercase font-mono tracking-wider">
-                  Data Privacy Policy
-                </span>
-                <span className="block mt-0.5 text-gray-700 dark:text-slate-300">
-                  Local-only sandbox state. Cleared instantly on cache wipe.
-                </span>
+                <Link to="/privacy-policy" className="hover:text-blue-500 font-bold">
+                  Privacy Policy
+                </Link>
               </li>
               <li>
-                <span className="block text-[11px] text-gray-400 dark:text-slate-500 uppercase font-mono tracking-wider">
-                  Supported Laws
-                </span>
-                <span className="block mt-0.5 text-gray-700 dark:text-slate-300">
-                  {country === 'INDIA' ? 'Union Budget 2024 / FY 2024-25' : 'US Federal Tax brackets Year 2024'}
-                </span>
+                <Link to="/terms-of-use" className="hover:text-blue-500 font-bold">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-blue-500 font-bold">
+                  About TaxCalc Pro
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-blue-500 font-bold">
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/guides" className="hover:text-blue-500 font-bold">
+                  Educational Guides
+                </Link>
               </li>
             </ul>
           </div>
@@ -164,15 +147,13 @@ export default function Footer({ country }: FooterProps) {
         <div className="mt-8 pt-8 border-t border-gray-200/50 dark:border-slate-900/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium">
           <p>© {currentYear} TaxCalc Pro Platform. Apache-2.0 License.</p>
           <div className="flex space-x-4">
-            <span
-              onClick={() => setIsTermsOpen(true)}
-              className="hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer text-blue-600 dark:text-blue-400 font-bold"
-              id="footer_terms_of_use_link"
-            >
+            <Link to="/terms-of-use" className="hover:text-gray-900 dark:hover:text-white transition-colors text-blue-600 dark:text-blue-400 font-bold">
               Terms of Use
-            </span>
+            </Link>
             <span>•</span>
-            <span className="hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer">Security Auditing</span>
+            <Link to="/privacy-policy" className="hover:text-gray-900 dark:hover:text-white transition-colors text-blue-600 dark:text-blue-400 font-bold">
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </div>
