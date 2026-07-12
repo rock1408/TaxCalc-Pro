@@ -4,8 +4,10 @@
  */
 
 import { Country, CryptoTransaction, CryptoTxType, CostBasisMethod } from '../types';
-import { Trash2, Plus, Download, Upload, Info, AlertTriangle, Coins, RefreshCw, FileSpreadsheet, Calculator, Calendar, ArrowRight, ShieldCheck } from 'lucide-react';
-import React, { useState, useRef } from 'react';
+import { Trash2, Plus, Download, Upload, Info, AlertTriangle, Coins, RefreshCw, FileSpreadsheet, Calculator, Calendar, ArrowRight, ShieldCheck, BarChart3 } from 'lucide-react';
+import React, { useState, useRef, useMemo } from 'react';
+import { calculateCryptoGains } from '../utils/cryptoCalculator';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 interface CryptoSectionProps {
   country: Country;
@@ -386,6 +388,152 @@ export default function CryptoSection({
     setManualCalcResult(null);
   };
 
+  // --- YEARLY PORTFOLIO GAINS/LOSSES CALCULATION FOR RECHARTS ---
+  const ledgerAnalysis = useMemo(() => {
+    return calculateCryptoGains(transactions, costBasisMethod, country as 'INDIA' | 'USA', ordinaryRate);
+  }, [transactions, costBasisMethod, country, ordinaryRate]);
+
+  const yearlyChartData = useMemo(() => {
+    const yearlyMap: Record<string, { year: string; gains: number; losses: number }> = {};
+
+    ledgerAnalysis.gainsList.forEach((item) => {
+      try {
+        const date = new Date(item.timestamp);
+        const year = date.getFullYear();
+        if (isNaN(year)) return;
+        const yearStr = String(year);
+
+        if (!yearlyMap[yearStr]) {
+          yearlyMap[yearStr] = { year: yearStr, gains: 0, losses: 0 };
+        }
+
+        if (item.gainOrLoss > 0) {
+          yearlyMap[yearStr].gains += item.gainOrLoss;
+        } else if (item.gainOrLoss < 0) {
+          yearlyMap[yearStr].losses += Math.abs(item.gainOrLoss);
+        }
+      } catch (e) {
+        // Skip
+      }
+    });
+
+    return Object.values(yearlyMap).sort((a, b) => a.year.localeCompare(b.year));
+  }, [ledgerAnalysis]);
+
+  const handleSeedDemoPortfolio = () => {
+    const isIndia = country === 'INDIA';
+    const rateMultiplier = isIndia ? 85 : 1;
+
+    const demoTxs: CryptoTransaction[] = [
+      {
+        id: 'tx_demo_1',
+        timestamp: '2024-03-10T10:00:00.000Z',
+        type: 'BUY',
+        currency: 'BTC',
+        quantity: 0.5,
+        unitPrice: 42000 * rateMultiplier,
+        fee: 25 * rateMultiplier,
+        platform: 'Coinbase',
+        details: 'Initial position buy',
+      },
+      {
+        id: 'tx_demo_2',
+        timestamp: '2024-08-15T14:30:00.000Z',
+        type: 'SELL',
+        currency: 'BTC',
+        quantity: 0.2,
+        unitPrice: 64000 * rateMultiplier,
+        fee: 30 * rateMultiplier,
+        platform: 'Coinbase',
+        details: 'Partial profit taking',
+      },
+      {
+        id: 'tx_demo_3',
+        timestamp: '2025-02-18T09:15:00.000Z',
+        type: 'BUY',
+        currency: 'ETH',
+        quantity: 5,
+        unitPrice: 2200 * rateMultiplier,
+        fee: 15 * rateMultiplier,
+        platform: 'Binance',
+        details: 'Ethereum accumulation',
+      },
+      {
+        id: 'tx_demo_4',
+        timestamp: '2025-09-22T16:45:00.000Z',
+        type: 'SELL',
+        currency: 'ETH',
+        quantity: 3,
+        unitPrice: 3400 * rateMultiplier,
+        fee: 20 * rateMultiplier,
+        platform: 'Binance',
+        details: 'Sold for rent/expenses',
+      },
+      {
+        id: 'tx_demo_5',
+        timestamp: '2026-01-05T11:00:00.000Z',
+        type: 'BUY',
+        currency: 'SOL',
+        quantity: 80,
+        unitPrice: 90 * rateMultiplier,
+        fee: 5 * rateMultiplier,
+        platform: 'Kraken',
+        details: 'Solana position',
+      },
+      {
+        id: 'tx_demo_6',
+        timestamp: '2026-03-28T13:10:00.000Z',
+        type: 'SELL',
+        currency: 'SOL',
+        quantity: 50,
+        unitPrice: 180 * rateMultiplier,
+        fee: 10 * rateMultiplier,
+        platform: 'Kraken',
+        details: 'Profit realization near peak',
+      },
+      {
+        id: 'tx_demo_7',
+        timestamp: '2026-05-12T10:00:00.000Z',
+        type: 'SELL',
+        currency: 'BTC',
+        quantity: 0.1,
+        unitPrice: 32000 * rateMultiplier,
+        fee: 15 * rateMultiplier,
+        platform: 'Coinbase',
+        details: 'Cut loss during correction',
+      },
+    ];
+
+    setTransactions(demoTxs);
+  };
+
+  const renderTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-3 rounded-xl shadow-xl text-xs space-y-1.5 font-sans">
+          <p className="font-extrabold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-[10px]">
+            Year: {label}
+          </p>
+          {payload.map((entry: any, index: number) => (
+            <div key={index} className="flex items-center space-x-2 justify-between min-w-[140px]">
+              <span className="font-medium text-gray-600 dark:text-slate-300 flex items-center">
+                <span 
+                  className="w-2.5 h-2.5 rounded-full mr-1.5 inline-block" 
+                  style={{ backgroundColor: entry.color }} 
+                />
+                {entry.name}
+              </span>
+              <span className="font-bold font-mono text-gray-900 dark:text-white">
+                {currencySymbol} {Math.round(entry.value).toLocaleString()}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="space-y-8 font-sans" id="crypto_section_wrapper">
       
@@ -417,6 +565,122 @@ export default function CryptoSection({
           </span>
           <span className="text-[10px] text-gray-400 mt-1 font-mono uppercase block">Schedules updated for FY 2026-27</span>
         </div>
+      </div>
+
+      {/* Portfolio Yearly Performance Visualizer Chart */}
+      <div className="p-6 rounded-2xl border bg-white border-gray-200 shadow-sm dark:bg-slate-900 dark:border-slate-800" id="crypto_yearly_chart_card">
+        <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-800 mb-6 gap-4">
+          <div>
+            <h3 className="font-sans font-bold text-sm uppercase tracking-wider text-gray-900 dark:text-white flex items-center">
+              <BarChart3 size={18} className="text-blue-500 mr-2 animate-pulse" />
+              <span>Yearly Capital Performance Analytics</span>
+            </h3>
+            <p className="text-[11px] text-gray-400 mt-1">
+              Dynamic realized gains and losses by year, computed under the active <span className="font-bold text-blue-500 font-mono text-[10px]">{costBasisMethod}</span> accounting engine.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            {/* Cost Basis Method Selector directly on the chart card for quick toggling! */}
+            <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl text-[10px] font-bold uppercase tracking-wider">
+              {(['FIFO', 'LIFO', 'HIFO', 'AVG'] as CostBasisMethod[]).map((method) => (
+                <button
+                  key={method}
+                  type="button"
+                  onClick={() => setCostBasisMethod(method)}
+                  className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                    costBasisMethod === method
+                      ? 'bg-white text-gray-900 shadow-sm dark:bg-slate-700 dark:text-white'
+                      : 'text-gray-400 hover:text-gray-700 dark:hover:text-slate-300'
+                  }`}
+                >
+                  {method}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {yearlyChartData.length === 0 ? (
+          <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
+              <BarChart3 size={24} />
+            </div>
+            <div className="max-w-md">
+              <h4 className="text-sm font-bold text-gray-800 dark:text-slate-200 font-sans">No Realized Performance Data</h4>
+              <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                Add buy and sell transactions using the "Log Transaction" tool to compute holding-period tax results, or load our pre-packaged dual-regime demonstration ledger.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleSeedDemoPortfolio}
+              className="flex items-center space-x-1.5 px-4 py-2 text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/10 active:scale-95 transition-all cursor-pointer"
+            >
+              <Plus size={13} />
+              <span>Seed Demo Portfolio</span>
+            </button>
+          </div>
+        ) : (
+          <div className="h-[280px] w-full" id="recharts_performance_container">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={yearlyChartData}
+                margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+              >
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  vertical={false}
+                  className="text-gray-200 dark:text-slate-800/60"
+                  stroke="currentColor"
+                />
+                <XAxis 
+                  dataKey="year" 
+                  tickLine={false}
+                  axisLine={false}
+                  className="text-gray-400 dark:text-slate-500 font-mono text-[10px]"
+                  tick={{ fill: 'currentColor' }}
+                />
+                <YAxis 
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(val) => `${currencySymbol}${val.toLocaleString()}`}
+                  className="text-gray-400 dark:text-slate-500 font-mono text-[10px]"
+                  tick={{ fill: 'currentColor' }}
+                />
+                <Tooltip 
+                  content={renderTooltip}
+                  cursor={{ fill: 'rgba(148, 163, 184, 0.05)' }}
+                />
+                <Legend 
+                  verticalAlign="top" 
+                  height={36} 
+                  iconType="circle"
+                  iconSize={8}
+                  formatter={(value) => (
+                    <span className="text-[11px] font-bold text-gray-600 dark:text-slate-300 uppercase tracking-wider font-sans">
+                      {value}
+                    </span>
+                  )}
+                />
+                <Bar 
+                  name="Realized Gains" 
+                  dataKey="gains" 
+                  fill="#10b981" 
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={48}
+                />
+                <Bar 
+                  name="Realized Losses" 
+                  dataKey="losses" 
+                  fill="#f43f5e" 
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={48}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
 
       {/* Main Layout: Forms on left, Calculations & Ledger on right */}
@@ -861,11 +1125,11 @@ export default function CryptoSection({
               <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Ledger Utilities</h4>
               <span className="text-[10px] text-gray-400 font-medium">CSV follows standard tax software accounting formats (CoinTracker, Koinly, etc.)</span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2" id="util_btn_grid">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2" id="util_btn_grid">
               <button
                 id="btn_export_csv"
                 onClick={handleExportCSV}
-                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all"
+                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
               >
                 <FileSpreadsheet size={13} />
                 <span>Export Tax CSV</span>
@@ -873,7 +1137,7 @@ export default function CryptoSection({
               <button
                 id="btn_export_backup"
                 onClick={handleBackupExport}
-                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all"
+                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
               >
                 <Download size={13} />
                 <span>JSON Backup</span>
@@ -881,15 +1145,23 @@ export default function CryptoSection({
               <button
                 id="btn_import_backup"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all"
+                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
               >
                 <Upload size={13} />
                 <span>Restore JSON</span>
               </button>
               <button
+                id="btn_seed_demo_ledger"
+                onClick={handleSeedDemoPortfolio}
+                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-100 rounded-xl dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/10 dark:hover:bg-blue-500/20 transition-all cursor-pointer"
+              >
+                <Plus size={13} />
+                <span>Seed Demo Ledger</span>
+              </button>
+              <button
                 id="btn_clear_ledger"
                 onClick={handleClearAll}
-                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-thin border-rose-200 rounded-xl dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/10 dark:hover:bg-rose-500/20 transition-all"
+                className="flex items-center justify-center space-x-1 px-3 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-thin border-rose-200 rounded-xl dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/10 dark:hover:bg-rose-500/20 transition-all cursor-pointer"
               >
                 <Trash2 size={13} />
                 <span>Empty Ledger</span>
